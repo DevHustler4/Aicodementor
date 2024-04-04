@@ -1,8 +1,13 @@
 import Image from "next/image";
 import React from "react";
+import { Button } from "@/components/ui/button";
+
 import { Separator } from "@/components/ui/separator";
 import { IoMdArrowBack } from "react-icons/io";
-const Lessons = () => {
+import { auth, signIn } from "auth";
+
+import { genratingQuiz } from "@/Serveraction/genratingquizz";
+const Lessons = async () => {
   const syllabus = [
     {
       topic: "Introduction to JavaScript",
@@ -121,7 +126,47 @@ const Lessons = () => {
       ],
     },
   ];
+  const session = await auth();
+  // console.log(session.user)
+  if (!session || !session.user) {
+    <>
+      <div className="absolute  bottom-[20%] right-[37%] flex flex-col gap-7 z-10 ">
+        <form
+          action={async () => {
+            "use server";
+            await signIn("google");
+          }}
+        >
+          <Button size={"lg"} className=" rounded-xl">
+            Sign In With Google
+          </Button>
+        </form>
 
+        <form
+          action={async () => {
+            "use server";
+            await signIn("github");
+          }}
+        >
+          <Button
+            size={"lg"}
+            className=" rounded-xl bg-slate-800 hover:bg-slate-900"
+          >
+            Sign In With Github
+          </Button>
+        </form>
+      </div>
+      <div className="relative min-w-screen h-screen z-0">
+        <Image src="/main.jpeg" alt="logo" fill={true} />
+      </div>
+    </>;
+  }
+  // aicodementor
+  // f70lttpaGx3Wl9ht
+  // await genratingQuiz();
+
+  //  mongodb+srv://aicodementor:f70lttpaGx3Wl9ht@cluster0.sbjlowz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+  // mongodb+srv://aicodementor:<password>@cluster0.sbjlowz.mongodb.net/
   return (
     <div className="w-screen mr-5 ">
       <div className="flex items-center my-2  justify-between">
@@ -166,10 +211,16 @@ const Lessons = () => {
                   <div className="bg-blue-700 hover:bg-blue-800 cursor-pointer text-xl rounded-md px-4 py-1 text-gray-100">
                     Start
                   </div>
-                  <div className="absolute top-0 right-13 w-1/3 p-6 z-10 rounded-lg bg-green-600 hidden group-hover:block">
+                  <div className="absolute top-0 right-13 w-1/2 p-6 z-10 mb-2 rounded-xl bg-blue-600 hidden group-hover:block">
                     {item.subtopics.map((item) => (
-                      <div key={item}>
-                        <li>{item}</li>
+                      <div
+                        key={item}
+                        className="flex items-center justify-between"
+                      >
+                        <h1 className="text-gray-200">{item}</h1>
+                        <div className="bg-blue-200 border-2 px-4 m-1 rounded-lg  border-blue-500">
+                          Go
+                        </div>
                       </div>
                     ))}
                   </div>

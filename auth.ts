@@ -1,28 +1,9 @@
 import type { NextAuthConfig } from "next-auth";
 import NextAuth from "next-auth";
-import Google from "next-auth/providers/google";
-import GitHub from "next-auth/providers/github";
 import GoogleProvider from "@auth/core/providers/google";
 import GithubProvider from "@auth/core/providers/github";
-// const credentialsConfig = CredentialsProvider({
-//   name: "Credentials",
-//   credentials: {
-//     username: {
-//       label: "User Name",
-//     },
-//     password: {
-//       label: "Password",
-//       type: "password",
-//     },
-//   },
-//   async authorize(credentials) {
-//     if (credentials.username === "sk" && credentials.password === "123")
-//       return {
-//         name: "Vahid",
-//       };
-//     else return null;
-//   },
-// });
+import { connectToDatabase } from "./lib/Mongodb";
+import User from "./lib/Mongodb/Models/User.model";
 
 const config = {
   providers: [
@@ -35,11 +16,39 @@ const config = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     }),
   ],
+
+  pages: {
+    signIn: "/signin",
+  },
   callbacks: {
     authorized({ request, auth }) {
+      const logged = !!auth;
       const { pathname } = request.nextUrl;
-      if (pathname === "/middlewareProtected") return !!auth;
+      const pro = pathname.startsWith("/");
+      if (pro) {
+        if (logged && pathname.startsWith("/signin")) {
+          return Response.redirect(new URL("/lesson", request.nextUrl));
+        }
+        return !!auth;
+      }
+
       return true;
+    },
+    async redirect({ url, baseUrl }) {
+      return url.startsWith(baseUrl) ? url : baseUrl;
+    },
+    async signIn({ user }) {
+      await connectToDatabase();
+      const myresult = await User.findOne({ email: user.email });
+      if (myresult) {
+        return myresult;
+      }
+      const createUser = await User.create({
+        name: user.name,
+        email: user.email,
+        image: user.image,
+      });
+      return createUser;
     },
   },
 } satisfies NextAuthConfig;
