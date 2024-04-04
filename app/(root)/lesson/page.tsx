@@ -127,7 +127,6 @@ const Lessons = async () => {
     },
   ];
   const session = await auth();
-  // console.log(session.user)
   if (!session || !session.user) {
     <>
       <div className="absolute  bottom-[20%] right-[37%] flex flex-col gap-7 z-10 ">
@@ -161,12 +160,6 @@ const Lessons = async () => {
       </div>
     </>;
   }
-  // aicodementor
-  // f70lttpaGx3Wl9ht
-  // await genratingQuiz();
-
-  //  mongodb+srv://aicodementor:f70lttpaGx3Wl9ht@cluster0.sbjlowz.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
-  // mongodb+srv://aicodementor:<password>@cluster0.sbjlowz.mongodb.net/
   return (
     <div className="w-screen mr-5 ">
       <div className="flex items-center my-2  justify-between">
