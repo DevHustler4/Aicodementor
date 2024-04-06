@@ -6,6 +6,7 @@ export interface UserInterface extends Document {
   email: string;
   image: string;
 }
+
 const userSchema = new Schema({
   name: {
     type: String,
@@ -20,5 +21,5 @@ const userSchema = new Schema({
     type: String,
   },
 });
-const User = models?.User || model("User", userSchema);
-export default User;
+
+export const User = models?.User || model("User", userSchema);
